@@ -122,3 +122,32 @@ def jogo_principal(modo):
         bola.x += movimento_bola[0]
         bola.y += movimento_bola[1]
 
+        if bola.x <= 0 or bola.x + tamanho_bola >= tamanho_tela[0]:
+            movimento_bola[0] = -movimento_bola[0]
+        if bola.y <= 0:
+            movimento_bola[1] = -movimento_bola[1]
+        if bola.y + tamanho_bola >= tamanho_tela[1]:
+            if modo == "facil":
+                vidas -= 1
+                if vidas <= 0:
+                    tela_derrota()
+                    return
+                else:
+                    bola.x, bola.y = 300, 200  
+            else:
+                tela_derrota()
+                return
+
+        if jogador.colliderect(bola):
+            movimento_bola[1] = -movimento_bola[1]
+
+        for bloco in blocos[:]:
+            if bloco.colliderect(bola):
+                blocos.remove(bloco)
+                movimento_bola[1] = -movimento_bola[1]
+                break
+
+        if len(blocos) == 0:
+            tela_vitoria()
+            return
+
