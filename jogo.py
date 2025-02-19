@@ -99,3 +99,26 @@ def tela_derrota():
 
         pygame.display.flip()
 
+def jogo_principal(modo):
+    blocos = criar_blocos()
+    movimento_bola = [5, -5]
+    vidas = 3 if modo == "facil" else 0
+    clock = pygame.time.Clock()
+
+    while True:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT]:
+            if (jogador.x + tamanho_jogador) < tamanho_tela[0]:
+                jogador.x += 5
+        if keys[pygame.K_LEFT]:
+            if jogador.x > 0:
+                jogador.x -= 5
+
+        bola.x += movimento_bola[0]
+        bola.y += movimento_bola[1]
+
