@@ -67,3 +67,35 @@ def tela_inicial():
 
         pygame.display.flip()
 
+def tela_vitoria():
+    while True:
+        tela.fill(cores["preta"])
+        desenhar_texto("Você Venceu!", 64, cores["verde"], 300)
+        desenhar_texto("Pressione ESPAÇO para voltar ao menu", 36, cores["branca"], 400)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_SPACE:
+                    return
+
+        pygame.display.flip()
+
+def tela_derrota():
+    while True:
+        tela.fill(cores["preta"])
+        desenhar_texto("Você Perdeu!", 64, cores["vermelha"], 300)
+        desenhar_texto("Pressione ESPAÇO para voltar ao menu", 36, cores["branca"], 400)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_SPACE:
+                    return
+
+        pygame.display.flip()
+
