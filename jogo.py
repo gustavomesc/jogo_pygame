@@ -151,3 +151,18 @@ def jogo_principal(modo):
             tela_vitoria()
             return
 
+        tela.fill(cores["preta"])
+        pygame.draw.rect(tela, cores["azul"], jogador)
+        pygame.draw.rect(tela, cores["branca"], bola)
+        for bloco in blocos:
+            pygame.draw.rect(tela, cores["verde"], bloco)
+
+        if modo == "facil":
+            desenhar_texto(f"Vidas: {vidas}", 36, cores["amarela"], 620)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+while True:
+    modo = tela_inicial()
+    jogo_principal(modo)
