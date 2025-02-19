@@ -43,3 +43,27 @@ def criar_blocos():
             blocos.append(bloco)
     return blocos
 
+def desenhar_texto(texto, tamanho, cor, y):
+    fonte = pygame.font.Font(None, tamanho)
+    texto_renderizado = fonte.render(texto, True, cor)
+    texto_rect = texto_renderizado.get_rect(center=(tamanho_tela[0] // 2, y))
+    tela.blit(texto_renderizado, texto_rect)
+
+def tela_inicial():
+    while True:
+        tela.fill(cores["preta"])
+        desenhar_texto("Brick Breaker", 64, cores["branca"], 200)
+        desenhar_texto("Pressione F para Fácil ou D para Difícil", 36, cores["branca"], 400)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_f:
+                    return "facil"
+                if evento.key == pygame.K_d:
+                    return "dificil"
+
+        pygame.display.flip()
+
