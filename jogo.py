@@ -130,10 +130,9 @@ def tela_derrota():
 def jogo_principal(modo):
     blocos = criar_blocos()
     movimento_bola = [5, -5]
-    vidas = 3 if modo == "facil" else 1  # Modo difícil começa com 1 vida
+    vidas = 3 if modo == "facil" else 1 
     clock = pygame.time.Clock()
 
-    # Variáveis para controle de poderes
     poder_ativo = None
     tempo_poder = 0
 
@@ -164,7 +163,7 @@ def jogo_principal(modo):
                 tela_derrota()
                 return
             else:
-                bola.x, bola.y = 300, 200  # Reinicia a bola
+                bola.x, bola.y = 300, 200 
 
         if jogador.colliderect(bola):
             movimento_bola[1] = -movimento_bola[1]
@@ -174,7 +173,6 @@ def jogo_principal(modo):
                 blocos.remove(bloco)
                 movimento_bola[1] = -movimento_bola[1]
 
-                # Verifica se o bloco é especial
                 if bloco["poder"]:
                     poder_ativo = bloco["poder"]
                     tempo_poder = pygame.time.get_ticks() + PODERES[poder_ativo]["duracao"]
@@ -186,10 +184,9 @@ def jogo_principal(modo):
                         movimento_bola[0] *= 1.5
                         movimento_bola[1] *= 1.5
                     elif poder_ativo == "vida_extra":
-                        vidas += 1  # Adiciona uma vida, independente do modo
+                        vidas += 1  
                 break
 
-        # Verifica se o poder acabou
         if poder_ativo and pygame.time.get_ticks() > tempo_poder:
             if poder_ativo == "aumentar_jogador":
                 jogador.width = tamanho_jogador
@@ -210,7 +207,6 @@ def jogo_principal(modo):
         for bloco in blocos:
             pygame.draw.rect(tela, bloco["cor"], bloco["rect"])
 
-        # Exibe o número de vidas, independente do modo
         desenhar_texto(f"Vidas: {vidas}", 36, cores["amarela"], 620)
 
         pygame.display.flip()
