@@ -1,4 +1,6 @@
 import pygame
+import random
+
 pygame.init()
 
 tamanho_tela = (650, 650)
@@ -11,7 +13,9 @@ cores = {
     "azul": (0, 0, 255),
     "verde": (0, 255, 0),
     "vermelha": (255, 0, 0),
-    "amarela": (255, 255, 0)
+    "amarela": (255, 255, 0),
+    "roxo": (128, 0, 128),
+    "Rosa":(255, 192, 203)
 }
 
 tamanho_bola = 15
@@ -24,6 +28,15 @@ qtde_blocos_linha = 8
 qtde_linhas_blocos = 5
 qtde_total_blocos = qtde_blocos_linha * qtde_linhas_blocos
 
+PODERES = {
+    "aumentar_jogador": {"cor": cores["roxo"], "duracao": 5000},  
+    "diminuir_jogador": {"cor": cores["vermelha"], "duracao": 5000},
+    "aumentar_velocidade": {"cor": cores["amarela"], "duracao": 5000},
+    "vida_extra": {"cor": cores["Rosa"], "duracao": 0} 
+}
+
+blocos_especiais = []
+
 def criar_blocos():
     largura_tela = tamanho_tela[0]
     distancia_entre_blocos = 5
@@ -34,12 +47,27 @@ def criar_blocos():
     blocos = []
     for j in range(qtde_linhas_blocos):
         for i in range(qtde_blocos_linha):
-            bloco = pygame.Rect(
+            bloco_rect = pygame.Rect(
                 i * (largura_bloco + distancia_entre_blocos) + distancia_entre_blocos,
                 j * distancia_entre_linhas + distancia_entre_blocos,
                 largura_bloco,
                 altura_bloco
             )
+
+            if random.random() < 0.2:
+                poder = random.choice(list(PODERES.keys()))
+                bloco = {
+                    "rect": bloco_rect,
+                    "cor": PODERES[poder]["cor"],
+                    "poder": poder
+                }
+                blocos_especiais.append(bloco)
+            else:
+                bloco = {
+                    "rect": bloco_rect,
+                    "cor": cores["verde"],
+                    "poder": None
+                }
             blocos.append(bloco)
     return blocos
 
@@ -102,8 +130,12 @@ def tela_derrota():
 def jogo_principal(modo):
     blocos = criar_blocos()
     movimento_bola = [5, -5]
-    vidas = 3 if modo == "facil" else 0
+    vidas = 3 if modo == "facil" else 1  # Modo difícil começa com 1 vida
     clock = pygame.time.Clock()
+
+    # Variáveis para controle de poderes
+    poder_ativo = None
+    tempo_poder = 0
 
     while True:
         for evento in pygame.event.get():
@@ -127,25 +159,46 @@ def jogo_principal(modo):
         if bola.y <= 0:
             movimento_bola[1] = -movimento_bola[1]
         if bola.y + tamanho_bola >= tamanho_tela[1]:
-            if modo == "facil":
-                vidas -= 1
-                if vidas <= 0:
-                    tela_derrota()
-                    return
-                else:
-                    bola.x, bola.y = 300, 200  
-            else:
+            vidas -= 1
+            if vidas <= 0:
                 tela_derrota()
                 return
+            else:
+                bola.x, bola.y = 300, 200  # Reinicia a bola
 
         if jogador.colliderect(bola):
             movimento_bola[1] = -movimento_bola[1]
 
         for bloco in blocos[:]:
-            if bloco.colliderect(bola):
+            if bloco["rect"].colliderect(bola):
                 blocos.remove(bloco)
                 movimento_bola[1] = -movimento_bola[1]
+
+                # Verifica se o bloco é especial
+                if bloco["poder"]:
+                    poder_ativo = bloco["poder"]
+                    tempo_poder = pygame.time.get_ticks() + PODERES[poder_ativo]["duracao"]
+                    if poder_ativo == "aumentar_jogador":
+                        jogador.width += 50
+                    elif poder_ativo == "diminuir_jogador":
+                        jogador.width -= 50
+                    elif poder_ativo == "aumentar_velocidade":
+                        movimento_bola[0] *= 1.5
+                        movimento_bola[1] *= 1.5
+                    elif poder_ativo == "vida_extra":
+                        vidas += 1  # Adiciona uma vida, independente do modo
                 break
+
+        # Verifica se o poder acabou
+        if poder_ativo and pygame.time.get_ticks() > tempo_poder:
+            if poder_ativo == "aumentar_jogador":
+                jogador.width = tamanho_jogador
+            elif poder_ativo == "diminuir_jogador":
+                jogador.width = tamanho_jogador
+            elif poder_ativo == "aumentar_velocidade":
+                movimento_bola[0] /= 1.5
+                movimento_bola[1] /= 1.5
+            poder_ativo = None
 
         if len(blocos) == 0:
             tela_vitoria()
@@ -155,10 +208,10 @@ def jogo_principal(modo):
         pygame.draw.rect(tela, cores["azul"], jogador)
         pygame.draw.rect(tela, cores["branca"], bola)
         for bloco in blocos:
-            pygame.draw.rect(tela, cores["verde"], bloco)
+            pygame.draw.rect(tela, bloco["cor"], bloco["rect"])
 
-        if modo == "facil":
-            desenhar_texto(f"Vidas: {vidas}", 36, cores["amarela"], 620)
+        # Exibe o número de vidas, independente do modo
+        desenhar_texto(f"Vidas: {vidas}", 36, cores["amarela"], 620)
 
         pygame.display.flip()
         clock.tick(60)
