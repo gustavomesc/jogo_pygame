@@ -4,11 +4,27 @@ import random
 pygame.init()
 pygame.mixer.init()
 
-# Definição da música
+
 def iniciar_musica():
     pygame.mixer.music.load('musica_fundo.mp3')
     pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1, 0.0)  
+
+def iniciar_musica_derrota():
+    pygame.mixer.music.load('musica_derrota.mp3')  
+    pygame.mixer.music.set_volume(1.0)
+    pygame.mixer.music.play(-1, 0.0)  
+
+def iniciar_musica_tela_inicial():
+    pygame.mixer.music.load('musica_tela_inicial.mp3')  # Música da tela inicial
+    pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1, 0.0)  # Loop infinito a partir de 0.0 segundos
+
+# Função para iniciar a música de vitória
+def iniciar_musica_vitoria():
+    pygame.mixer.music.load('musica_vitoria.mp3')  # Música de vitória
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(0, 0.0)  # Toca uma vez, sem loop
 
 tamanho_tela = (650, 650)
 tela = pygame.display.set_mode(tamanho_tela)
@@ -85,6 +101,7 @@ def desenhar_texto(texto, tamanho, cor, y):
     tela.blit(texto_renderizado, texto_rect)
 
 def tela_inicial():
+    iniciar_musica_tela_inicial()
     while True:
         tela.fill(cores["preta"])
         desenhar_texto("Brick Breaker", 64, cores["branca"], 200)
@@ -103,6 +120,7 @@ def tela_inicial():
         pygame.display.flip()
 
 def tela_vitoria():
+    iniciar_musica_vitoria()
     while True:
         tela.fill(cores["preta"])
         desenhar_texto("Você Venceu!", 64, cores["verde"], 300)
@@ -119,6 +137,7 @@ def tela_vitoria():
         pygame.display.flip()
 
 def tela_derrota():
+    iniciar_musica_derrota()
     while True:
         tela.fill(cores["preta"])
         desenhar_texto("Você Perdeu!", 64, cores["vermelha"], 300)
