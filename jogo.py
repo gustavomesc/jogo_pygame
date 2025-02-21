@@ -2,6 +2,13 @@ import pygame
 import random
 
 pygame.init()
+pygame.mixer.init()
+
+# Definição da música
+def iniciar_musica():
+    pygame.mixer.music.load('musica_fundo.mp3')
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1, 0.0)  # Loop infinito a partir de 0.0 segundos
 
 tamanho_tela = (650, 650)
 tela = pygame.display.set_mode(tamanho_tela)
@@ -135,6 +142,7 @@ def jogo_principal(modo):
 
     poder_ativo = None
     tempo_poder = 0
+    iniciar_musica()
 
     while True:
         for evento in pygame.event.get():
