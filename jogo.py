@@ -204,9 +204,9 @@ def jogo_principal(modo):
                     poder_ativo = bloco["poder"]
                     tempo_poder = pygame.time.get_ticks() + PODERES[poder_ativo]["duracao"]
                     if poder_ativo == "aumentar_jogador":
-                        jogador.width += 50
+                        jogador.width *= 2
                     elif poder_ativo == "diminuir_jogador":
-                        jogador.width -= 50
+                        jogador.width /= 2
                     elif poder_ativo == "aumentar_velocidade":
                         movimento_bola[0] *= 1.5
                         movimento_bola[1] *= 1.5
@@ -242,3 +242,4 @@ def jogo_principal(modo):
 while True:
     modo = tela_inicial()
     jogo_principal(modo)
+    tamanho_jogador = 100 #ainda tem que ajustar o tamanho de um jogo para outro
