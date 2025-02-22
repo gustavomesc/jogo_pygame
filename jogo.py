@@ -16,15 +16,13 @@ def iniciar_musica_derrota():
     pygame.mixer.music.play(-1, 0.0)  
 
 def iniciar_musica_tela_inicial():
-    pygame.mixer.music.load('musica_tela_inicial.mp3')  # Música da tela inicial
+    pygame.mixer.music.load('musica_tela_inicial.mp3')
     pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1, 0.0)  # Loop infinito a partir de 0.0 segundos
-
-# Função para iniciar a música de vitória
+    pygame.mixer.music.play(-1, 0.0)
 def iniciar_musica_vitoria():
-    pygame.mixer.music.load('musica_vitoria.mp3')  # Música de vitória
+    pygame.mixer.music.load('musica_vitoria.mp3')
     pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(0, 0.0)  # Toca uma vez, sem loop
+    pygame.mixer.music.play(0, 0.0)
 
 tamanho_tela = (650, 650)
 tela = pygame.display.set_mode(tamanho_tela)
@@ -171,11 +169,11 @@ def jogo_principal(modo):
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
-            if (jogador.x + tamanho_jogador) < tamanho_tela[0]:
-                jogador.x += 5
+            if (jogador.x + jogador.width) < tamanho_tela[0]:
+                jogador.x += 7
         if keys[pygame.K_LEFT]:
             if jogador.x > 0:
-                jogador.x -= 5
+                jogador.x -= 7
 
         bola.x += movimento_bola[0]
         bola.y += movimento_bola[1]
@@ -186,6 +184,7 @@ def jogo_principal(modo):
             movimento_bola[1] = -movimento_bola[1]
         if bola.y + tamanho_bola >= tamanho_tela[1]:
             vidas -= 1
+            jogador.width = tamanho_jogador
             if vidas <= 0:
                 tela_derrota()
                 return
@@ -208,8 +207,8 @@ def jogo_principal(modo):
                     elif poder_ativo == "diminuir_jogador":
                         jogador.width /= 2
                     elif poder_ativo == "aumentar_velocidade":
-                        movimento_bola[0] *= 1.5
-                        movimento_bola[1] *= 1.5
+                        movimento_bola[0] *= 1.3
+                        movimento_bola[1] *= 1.3
                     elif poder_ativo == "vida_extra":
                         vidas += 1  
                 break
@@ -240,6 +239,7 @@ def jogo_principal(modo):
         clock.tick(60)
 
 while True:
+    bola.x = jogador.x + jogador.width // 2 - tamanho_bola // 2
+    bola.y = jogador.y - tamanho_bola - 5
     modo = tela_inicial()
     jogo_principal(modo)
-    tamanho_jogador = 100 #ainda tem que ajustar o tamanho de um jogo para outro
